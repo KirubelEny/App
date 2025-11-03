@@ -70,5 +70,29 @@ type ReportTransactionsAndViolationsDerivedValue = Record<string, ReportTransact
  */
 type OutstandingReportsByPolicyIDDerivedValue = Record<string, OnyxCollection<Report>>;
 
+/**
+ * A derived map of personal details to an object containing the original accountID and a loginDomain when available.
+ * If the domain is a public domain, loginDomain will be undefined (skipped).
+ */
+type PersonalDetailsEmailDomainsDerivedValue = Record<
+    string,
+    {
+        /** The account ID this entry corresponds to (stringified) */
+        accountID: string;
+        /**
+         * The email domain extracted from the user's login (lowercased).
+         * If the domain is public, this will be undefined to indicate it was skipped.
+         */
+        loginDomain?: string | null;
+    }
+>;
+
 export default ReportAttributesDerivedValue;
-export type {ReportAttributes, ReportAttributesDerivedValue, ReportTransactionsAndViolationsDerivedValue, ReportTransactionsAndViolations, OutstandingReportsByPolicyIDDerivedValue};
+export type {
+    ReportAttributes,
+    ReportAttributesDerivedValue,
+    ReportTransactionsAndViolationsDerivedValue,
+    ReportTransactionsAndViolations,
+    OutstandingReportsByPolicyIDDerivedValue,
+    PersonalDetailsEmailDomainsDerivedValue,
+};

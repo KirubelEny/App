@@ -1,6 +1,7 @@
 import {useMemo} from 'react';
 import {usePersonalDetails} from '@components/OnyxListItemProvider';
-import {areEmailsFromSamePrivateDomain} from '@libs/LoginUtils';
+import ONYXKEYS from '@src/ONYXKEYS';
+import useOnyx from './useOnyx';
 import useCurrentUserPersonalDetails from './useCurrentUserPersonalDetails';
 
 /**
@@ -13,19 +14,29 @@ export default function useShortMentionsList() {
     const personalDetails = usePersonalDetails();
     const currentUserPersonalDetails = useCurrentUserPersonalDetails();
 
+    const [personalDetailsEmailDomains] = useOnyx(ONYXKEYS.DERIVED.PERSONAL_DETAILS_EMAIL_DOMAINS, {canBeMissing: true});
+
     const availableLoginsList = useMemo(() => {
         if (!personalDetails) {
             return [];
         }
 
-        return Object.values(personalDetails)
-            .map((personalDetail) => {
+        // Use entries so we keep the accountID to look up derived loginDomain mapping
+        return Object.entries(personalDetails)
+            .map(([, personalDetail]) => {
                 if (!personalDetail?.login) {
                     return;
                 }
 
-                // If the emails are not in the same private domain, we don't want to highlight them
-                if (!areEmailsFromSamePrivateDomain(personalDetail.login, currentUserPersonalDetails.login ?? '')) {
+                // Compare loginDomain equality using derived mapping for both users.
+                // Only highlight when both have a non-empty, equal loginDomain.
+                const personalAccountID = String(personalDetail.accountID ?? '');
+                const currentAccountID = String(currentUserPersonalDetails.accountID ?? '');
+
+                const personalDomain = personalDetailsEmailDomains?.[personalAccountID]?.loginDomain;
+                const currentDomain = personalDetailsEmailDomains?.[currentAccountID]?.loginDomain;
+
+                if (!personalDomain || !currentDomain || personalDomain !== currentDomain) {
                     return;
                 }
 
@@ -33,7 +44,7 @@ export default function useShortMentionsList() {
                 return username;
             })
             .filter((login): login is string => !!login);
-    }, [currentUserPersonalDetails.login, personalDetails]);
+    }, [currentUserPersonalDetails.accountID, personalDetails, personalDetailsEmailDomains]);
 
     // We want to highlight both short and long version of current user login
     const currentUserMentions = useMemo(() => {

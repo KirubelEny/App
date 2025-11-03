@@ -62,6 +62,9 @@ type PersonalDetails = OnyxCommon.OnyxValueWithOfflineFeedback<{
     /** Login of the current user from their personal details */
     login?: string;
 
+    /** Domain extracted from Login of the current user from their personal details */
+    loginDomain?: string;
+
     /** Pronouns of the current user from their personal details */
     pronouns?: string;
 

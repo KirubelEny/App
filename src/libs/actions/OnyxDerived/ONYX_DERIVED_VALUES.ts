@@ -3,6 +3,7 @@ import ONYXKEYS from '@src/ONYXKEYS';
 import outstandingReportsByPolicyIDConfig from './configs/outstandingReportsByPolicyID';
 import reportAttributesConfig from './configs/reportAttributes';
 import reportTransactionsAndViolationsConfig from './configs/reportTransactionsAndViolations';
+import personalDetailsEmailDomainsConfig from './configs/personalDetailsEmailDomains';
 import type {OnyxDerivedValueConfig} from './types';
 
 /**
@@ -13,6 +14,7 @@ const ONYX_DERIVED_VALUES = {
     [ONYXKEYS.DERIVED.REPORT_ATTRIBUTES]: reportAttributesConfig,
     [ONYXKEYS.DERIVED.REPORT_TRANSACTIONS_AND_VIOLATIONS]: reportTransactionsAndViolationsConfig,
     [ONYXKEYS.DERIVED.OUTSTANDING_REPORTS_BY_POLICY_ID]: outstandingReportsByPolicyIDConfig,
+    [ONYXKEYS.DERIVED.PERSONAL_DETAILS_EMAIL_DOMAINS]: personalDetailsEmailDomainsConfig,
 } as const satisfies {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [Key in ValueOf<typeof ONYXKEYS.DERIVED>]: OnyxDerivedValueConfig<Key, any>;
